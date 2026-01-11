@@ -47,7 +47,7 @@ public class ProductMenu implements Menu {
                 case "8":
                     return;
                 default:
-                    System.out.println("Chức năng đang phát triển!");
+                    System.out.println("Lựa chọn không phù hợp! Vui lòng nhập lại: ");
             }
         }
     }
