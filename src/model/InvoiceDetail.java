@@ -3,16 +3,16 @@ package model;
 import java.math.BigDecimal;
 
 public class InvoiceDetail {
-    private long id;
-    private long invoiceId;
-    private long productId;
+    private int id;
+    private int invoiceId;
+    private int productId;
     private int quantity;
     private BigDecimal unitPrice;
 
     public InvoiceDetail() {
     }
 
-    public InvoiceDetail(long id, long invoiceId, long productId, int quantity, BigDecimal unitPrice) {
+    public InvoiceDetail(int id, int invoiceId, int productId, int quantity, BigDecimal unitPrice) {
         this.id = id;
         this.invoiceId = invoiceId;
         this.productId = productId;
@@ -36,27 +36,27 @@ public class InvoiceDetail {
         this.quantity = quantity;
     }
 
-    public long getProductId() {
+    public int getProductId() {
         return productId;
     }
 
-    public void setProductId(long productId) {
+    public void setProductId(int productId) {
         this.productId = productId;
     }
 
-    public long getInvoiceId() {
+    public int getInvoiceId() {
         return invoiceId;
     }
 
-    public void setInvoiceId(long invoiceId) {
+    public void setInvoiceId(int invoiceId) {
         this.invoiceId = invoiceId;
     }
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(int id) {
         this.id = id;
     }
 }

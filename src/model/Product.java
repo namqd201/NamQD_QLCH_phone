@@ -3,7 +3,7 @@ package model;
 import java.math.BigDecimal;
 
 public class Product {
-    private long productId;
+    private int productId;
     private String productName;
     private String brand;
     private BigDecimal productPrice;
@@ -12,7 +12,7 @@ public class Product {
     public Product() {
     }
 
-    public Product(long productId, String productName, String brand, BigDecimal productPrice, int stock) {
+    public Product(int productId, String productName, String brand, BigDecimal productPrice, int stock) {
         this.productId = productId;
         this.productName = productName;
         this.brand = brand;
@@ -20,11 +20,11 @@ public class Product {
         this.stock = stock;
     }
 
-    public long getProductId() {
+    public int getProductId() {
         return productId;
     }
 
-    public void setProductId(long productId) {
+    public void setProductId(int productId) {
         this.productId = productId;
     }
 

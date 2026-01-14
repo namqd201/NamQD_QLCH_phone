@@ -33,7 +33,7 @@ public class DashboardMenu implements Menu {
                     new ReportMenu().show();
                     break;
                 case "5":
-                    return;
+                    new MainMenu().show();
                 default:
                     System.out.println("Lựa chọn không hợp lệ!");
             }

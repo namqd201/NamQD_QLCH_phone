@@ -4,34 +4,34 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 public class Invoice {
-    private long id;
-    private long customerId;
+    private int id;
+    private int customerId;
     private LocalDateTime createdAt;
     private BigDecimal totalAmount;
 
     public Invoice() {
     }
 
-    public Invoice(long id, long customerId, LocalDateTime createdAt, BigDecimal totalAmount) {
+    public Invoice(int id, int customerId, LocalDateTime createdAt, BigDecimal totalAmount) {
         this.id = id;
         this.customerId = customerId;
         this.createdAt = createdAt;
         this.totalAmount = totalAmount;
     }
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
-    public long getCustomerId() {
+    public int getCustomerId() {
         return customerId;
     }
 
-    public void setCustomerId(long customerId) {
+    public void setCustomerId(int customerId) {
         this.customerId = customerId;
     }
 
