@@ -1,15 +1,21 @@
 package presentation;
 
+import business.impl.ProductServiceImpl;
 import dao.impl.ProductDAOImpl;
 import model.Product;
 import presentation.impl.Menu;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
 public class ProductMenu implements Menu {
-    private final ProductDAOImpl dao =  new ProductDAOImpl();
+    private final ProductServiceImpl service;
+    public ProductMenu(ProductServiceImpl service) {
+        this.service = service;
+    }
+
     @Override
     public void show() {
         Scanner sc = new Scanner(System.in);
@@ -21,7 +27,7 @@ public class ProductMenu implements Menu {
             System.out.println("4. Xóa sản phẩm theo ID");
             System.out.println("5. Tìm kiếm theo Brand");
             System.out.println("6. Tìm kiếm theo khoảng giá");
-            System.out.println("7. Tìm kiếm theo tồn kho");
+            System.out.println("7. Tìm kiếm số lượng tồn kho theo tên");
             System.out.println("8. Quay lại menu chính");
             System.out.print("Nhập lựa chọn: ");
 
@@ -47,7 +53,7 @@ public class ProductMenu implements Menu {
                     findAllProductByPrice(sc);
                     break;
                 case "7":
-                    System.out.println("TODO");
+                    findAllProductByName(sc);
                     break;
                 case "8":
                     return;
@@ -58,7 +64,7 @@ public class ProductMenu implements Menu {
     }
 
     private void findAllProducts() {
-        List<Product> products = dao.findAllProducts();
+        List<Product> products = service.findAll();
         if (products.isEmpty()) {
             System.out.println("Không có sản phẩm nào!");
         } else {
@@ -125,7 +131,7 @@ public class ProductMenu implements Menu {
         product.setProductPrice(price);
         product.setStock(stock);
 
-        if (dao.addProduct(product)) {
+        if (service.addProduct(product)) {
             System.out.println("Thêm sản phẩm thành công!");
         } else {
             System.out.println("Thêm sản phẩm thất bại!");
@@ -142,7 +148,7 @@ public class ProductMenu implements Menu {
             try{
                 System.out.print("Nhập id sản phẩm muốn cập nhật: ");
                 id = Integer.parseInt(sc.nextLine().trim());
-                oldProduct = dao.findProductById(id);
+                oldProduct = service.findById(id);
                 if (oldProduct == null) {
                     System.out.println("Sản phẩm không tồn tại!");
                 } else{
@@ -203,7 +209,7 @@ public class ProductMenu implements Menu {
         product.setProductPrice(price);
         product.setStock(stock);
 
-        if (dao.updateProduct(product)) {
+        if (service.updateProduct(product)) {
             System.out.println("Cập nhật sản phẩm thành công!");
         } else {
             System.out.println("Cập nhật sản phẩm thất bại!");
@@ -217,7 +223,7 @@ public class ProductMenu implements Menu {
             try{
                 System.out.print("Nhập id sản phẩm muốn xóa: ");
                 id = Integer.parseInt(sc.nextLine().trim());
-                oldProduct = dao.findProductById(id);
+                oldProduct = service.findById(id);
                 if (oldProduct == null) {
                     System.out.println("Sản phẩm không tồn tại!");
                 } else{
@@ -238,7 +244,7 @@ public class ProductMenu implements Menu {
             String confirm = sc.nextLine().trim();
 
             if (confirm.equalsIgnoreCase("Y")) {
-                if (dao.deleteProduct(id)) {
+                if (service.deleteProduct(id)) {
                     System.out.println("Xóa sản phẩm thành công!");
                 } else {
                     System.out.println("Xóa sản phẩm thất bại!");
@@ -266,7 +272,7 @@ public class ProductMenu implements Menu {
                 break;
             }
         }
-        List<Product> products = dao.findAllProductsByBrand(brand);
+        List<Product> products = service.findByBrand(brand);
         if (products.isEmpty()) {
             System.out.println("Không tìm thấy sản phẩm nào!");
         } else {
@@ -307,7 +313,7 @@ public class ProductMenu implements Menu {
                 System.out.println("Giá không hợp lệ!");
             }
         }
-        List<Product> products = dao.findAllProductsByPrice(minPrice, maxPrice);
+        List<Product> products = service.findByPriceRange(minPrice, maxPrice);
         if (products.isEmpty()) {
             System.out.println("Không tìm thấy sản phẩm nào!");
         } else {
@@ -323,5 +329,33 @@ public class ProductMenu implements Menu {
                 );
             }
         }
+    }
+
+    private void findAllProductByName(Scanner sc) {
+        String name;
+        while (true) {
+            System.out.println("Nhập tên sản phẩm: ");
+            name = sc.nextLine().trim();
+            if (name.isEmpty()){
+                System.out.println("Không được để trống tên sản phẩm!");
+            } else {
+                break;
+            }
+        }
+        List<Product> products =  service.findByName(name);
+        if (products.isEmpty()) {
+            System.out.println("Sản phẩm không tồn tại");
+        } else {
+            System.out.println("ID | Tên | Tồn kho");
+            for (Product p : products) {
+                System.out.printf(
+                        "%d | %s | %d%n",
+                        p.getProductId(),
+                        p.getProductName(),
+                        p.getStock()
+                );
+            }
+        }
+
     }
 }

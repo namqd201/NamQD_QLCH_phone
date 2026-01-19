@@ -13,4 +13,5 @@ public interface IProductDAO {
     Boolean deleteProduct(int id);
     List<Product> findAllProductsByBrand(String brand);
     List<Product> findAllProductsByPrice(BigDecimal minPrice,  BigDecimal maxPrice);
+    List<Product> findAllProductsByName(String name);
 }

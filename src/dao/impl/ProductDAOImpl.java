@@ -156,4 +156,29 @@ public class ProductDAOImpl implements IProductDAO {
         }
         return products;
     }
+
+    @Override
+    public List<Product> findAllProductsByName(String name) {
+        String sql = "SELECT * FROM product WHERE name LIKE ?";
+        List<Product> products = new ArrayList<>();
+        try{
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, "%" + name + "%");
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()){
+                Product product = new Product();
+                product.setProductId(rs.getInt("id"));
+                product.setProductName(rs.getString("name"));
+                product.setBrand(rs.getString("brand"));
+                product.setProductPrice(rs.getBigDecimal("price"));
+                product.setStock(rs.getInt("stock"));
+                products.add(product);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return products;
+    }
+
+
 }

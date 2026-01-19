@@ -5,6 +5,12 @@ import presentation.impl.Menu;
 import java.util.Scanner;
 
 public class DashboardMenu implements Menu {
+    private final ProductMenu productMenu;
+
+    public DashboardMenu(ProductMenu productMenu) {
+        this.productMenu = productMenu;
+    }
+
     @Override
     public void show() {
         Scanner sc = new Scanner(System.in);
@@ -21,7 +27,7 @@ public class DashboardMenu implements Menu {
 
             switch (choice) {
                 case "1":
-                    new ProductMenu().show();
+                    productMenu.show();
                     break;
                 case "2":
                     new CustomerMenu().show();
