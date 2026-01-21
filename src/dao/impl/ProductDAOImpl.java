@@ -13,16 +13,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ProductDAOImpl implements IProductDAO {
-    DBUtil dbUtil = new DBUtil();
-    Connection conn = dbUtil.getConnection();
+    private final DBUtil dbUtil;
+    public ProductDAOImpl(DBUtil dbUtil) {
+        this.dbUtil = dbUtil;
+    }
+
     @Override
     public List<Product> findAllProducts() {
         String sql = "select * from product";
         List<Product> products = new ArrayList<>();
-        try{
+        try(Connection conn = dbUtil.getConnection();
             PreparedStatement ps = conn.prepareStatement(sql);
-            ResultSet rs = ps.executeQuery();
-
+            ResultSet rs = ps.executeQuery();){
             while(rs.next()){
                 Product product = new Product();
                 product.setProductId(rs.getInt("id"));
@@ -41,18 +43,20 @@ public class ProductDAOImpl implements IProductDAO {
     @Override
     public Product findProductById(int id) {
         String sql = "select * from product where id = ?";
-        try{
-            PreparedStatement ps = conn.prepareStatement(sql);
+        try(Connection conn = dbUtil.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql);)
+        {
             ps.setInt(1, id);
-            ResultSet rs = ps.executeQuery();
-            if(rs.next()){
-                Product product = new Product();
-                product.setProductId(rs.getInt("id"));
-                product.setProductName(rs.getString("name"));
-                product.setBrand(rs.getString("brand"));
-                product.setProductPrice(rs.getBigDecimal("price"));
-                product.setStock(rs.getInt("stock"));
-                return product;
+            try(ResultSet rs = ps.executeQuery();) {
+                if (rs.next()) {
+                    Product product = new Product();
+                    product.setProductId(rs.getInt("id"));
+                    product.setProductName(rs.getString("name"));
+                    product.setBrand(rs.getString("brand"));
+                    product.setProductPrice(rs.getBigDecimal("price"));
+                    product.setStock(rs.getInt("stock"));
+                    return product;
+                }
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -64,8 +68,10 @@ public class ProductDAOImpl implements IProductDAO {
     @Override
     public Boolean addProduct(Product product) {
         String sql = "insert into product (name, brand, price, stock) values(?,?,?,?)";
-        try{
+        try(Connection conn = dbUtil.getConnection();
             PreparedStatement ps = conn.prepareStatement(sql);
+        ){
+
             ps.setString(1, product.getProductName());
             ps.setString(2, product.getBrand());
             ps.setBigDecimal(3, product.getProductPrice());
@@ -82,9 +88,9 @@ public class ProductDAOImpl implements IProductDAO {
     @Override
     public Boolean updateProduct(Product product) {
         String sql = "update product set name = ?, brand = ?, price = ?, stock = ? where id = ?";
-        try {
+        try(Connection conn = dbUtil.getConnection();
             PreparedStatement ps = conn.prepareStatement(sql);
-
+        ) {
             ps.setString(1, product.getProductName());
             ps.setString(2, product.getBrand());
             ps.setBigDecimal(3, product.getProductPrice());
@@ -100,8 +106,9 @@ public class ProductDAOImpl implements IProductDAO {
     @Override
     public Boolean deleteProduct(int id) {
         String sql = "delete from product where id = ?";
-        try{
+        try(Connection conn = dbUtil.getConnection();
             PreparedStatement ps = conn.prepareStatement(sql);
+        ){
             ps.setInt(1, id);
             ps.executeUpdate();
         } catch (SQLException e) {
@@ -114,8 +121,9 @@ public class ProductDAOImpl implements IProductDAO {
     public List<Product> findAllProductsByBrand(String brand) {
         String sql = "SELECT * FROM product WHERE brand ILIKE ?";
         List<Product> products = new ArrayList<>();
-        try{
+        try(Connection conn = dbUtil.getConnection();
             PreparedStatement ps = conn.prepareStatement(sql);
+        ){
             ps.setString(1, "%" + brand + "%");
             ResultSet rs = ps.executeQuery();
             while(rs.next()){
@@ -137,19 +145,21 @@ public class ProductDAOImpl implements IProductDAO {
     public List<Product> findAllProductsByPrice(BigDecimal minPrice, BigDecimal maxPrice) {
         String sql = "SELECT * FROM product WHERE price BETWEEN ? AND ?";
         List<Product> products = new ArrayList<>();
-        try{
+        try(Connection conn = dbUtil.getConnection();
             PreparedStatement ps = conn.prepareStatement(sql);
+        ){
             ps.setBigDecimal(1, minPrice);
             ps.setBigDecimal(2, maxPrice);
-            ResultSet rs = ps.executeQuery();
-            while(rs.next()){
-                Product product = new Product();
-                product.setProductId(rs.getInt("id"));
-                product.setProductName(rs.getString("name"));
-                product.setBrand(rs.getString("brand"));
-                product.setProductPrice(rs.getBigDecimal("price"));
-                product.setStock(rs.getInt("stock"));
-                products.add(product);
+            try(ResultSet rs = ps.executeQuery();){
+                while(rs.next()){
+                    Product product = new Product();
+                    product.setProductId(rs.getInt("id"));
+                    product.setProductName(rs.getString("name"));
+                    product.setBrand(rs.getString("brand"));
+                    product.setProductPrice(rs.getBigDecimal("price"));
+                    product.setStock(rs.getInt("stock"));
+                    products.add(product);
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -161,8 +171,9 @@ public class ProductDAOImpl implements IProductDAO {
     public List<Product> findAllProductsByName(String name) {
         String sql = "SELECT * FROM product WHERE name LIKE ?";
         List<Product> products = new ArrayList<>();
-        try{
+        try(Connection conn = dbUtil.getConnection();
             PreparedStatement ps = conn.prepareStatement(sql);
+        ){
             ps.setString(1, "%" + name + "%");
             ResultSet rs = ps.executeQuery();
             while (rs.next()){
