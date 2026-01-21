@@ -5,32 +5,32 @@ import utils.DBUtil;
 
 public class Main {
     public static void main(String[] args) {
-        // Initialize DBUtil
+        // DBUtil
         DBUtil dbUtil = new DBUtil();
         
-        // Initialize DAOs
+        // DAOs
         ProductDAOImpl productDAO = new ProductDAOImpl(dbUtil);
         CustomerDAOImpl customerDAO = new CustomerDAOImpl(dbUtil);
+        RevenueReportDAOImpl revenueReportDAO = new RevenueReportDAOImpl(dbUtil);
         
-        // Initialize services
+        // services
         LoginServiceImpl loginService = new LoginServiceImpl();
         ProductServiceImpl productService = new ProductServiceImpl(productDAO);
         CustomerSeviceImpl customerService = new CustomerSeviceImpl(customerDAO);
         InvoiceServiceImpl invoiceService = new InvoiceServiceImpl(dbUtil);
+        RevenueReportServiceImpl revenueReportService = new RevenueReportServiceImpl(revenueReportDAO);
         
-        // Initialize menu views
+        // menu views
         ProductMenu productMenu = new ProductMenu(productService);
         CustomerMenu customerMenu = new CustomerMenu(customerService);
         InvoiceSearchMenu invoiceSearchMenu = new InvoiceSearchMenu(invoiceService);
         InvoiceMenu invoiceMenu = new InvoiceMenu(invoiceService, invoiceSearchMenu);
-        ReportMenu reportMenu = new ReportMenu();
+        ReportMenu reportMenu = new ReportMenu(revenueReportService);
         MainMenu mainMenu = new MainMenu();
-        DashboardMenu dashboardMenu = new DashboardMenu(productMenu, customerMenu, invoiceMenu, mainMenu);
-        
-        // Initialize login view and main menu
+        DashboardMenu dashboardMenu = new DashboardMenu(productMenu, customerMenu, invoiceMenu, mainMenu, reportMenu);
+
         mainMenu.setLoginView(new LoginView(loginService, dashboardMenu));
-        
-        // Start the application
+
         mainMenu.show();
     }
 }

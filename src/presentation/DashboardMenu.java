@@ -9,12 +9,14 @@ public class DashboardMenu implements Menu {
     private final CustomerMenu customerMenu;
     private final InvoiceMenu invoiceMenu;
     private final MainMenu mainMenu;
+    private final ReportMenu reportMenu;
 
-    public DashboardMenu(ProductMenu productMenu, CustomerMenu customerMenu, InvoiceMenu invoiceMenu, MainMenu mainMenu) {
+    public DashboardMenu(ProductMenu productMenu, CustomerMenu customerMenu, InvoiceMenu invoiceMenu, MainMenu mainMenu, ReportMenu reportMenu) {
         this.productMenu = productMenu;
         this.customerMenu = customerMenu;
         this.invoiceMenu = invoiceMenu;
         this.mainMenu = mainMenu;
+        this.reportMenu = reportMenu;
     }
 
     @Override
@@ -42,7 +44,7 @@ public class DashboardMenu implements Menu {
                     invoiceMenu.show();
                     break;
                 case "4":
-                    new ReportMenu().show();
+                    reportMenu.show();
                     break;
                 case "5":
                     mainMenu.show();
