@@ -34,22 +34,17 @@ public class InvoiceSearchMenu implements Menu {
                 case "1":
                     searchByCustomerName(sc);
                     break;
-
                 case "2":
-
+                    searchByDay(sc);
                     break;
-
                 case "3":
-
+                    searchByMonth(sc);
                     break;
-
                 case "4":
-
+                    searchByYear(sc);
                     break;
-
                 case "5":
                     return; // quay lại InvoiceMenu
-
                 default:
                     System.out.println("Lựa chọn không hợp lệ, vui lòng nhập lại!");
             }

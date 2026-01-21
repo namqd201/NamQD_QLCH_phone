@@ -8,11 +8,13 @@ public class DashboardMenu implements Menu {
     private final ProductMenu productMenu;
     private final CustomerMenu customerMenu;
     private final InvoiceMenu invoiceMenu;
+    private final MainMenu mainMenu;
 
-    public DashboardMenu(ProductMenu productMenu, CustomerMenu customerMenu, InvoiceMenu invoiceMenu) {
+    public DashboardMenu(ProductMenu productMenu, CustomerMenu customerMenu, InvoiceMenu invoiceMenu, MainMenu mainMenu) {
         this.productMenu = productMenu;
         this.customerMenu = customerMenu;
         this.invoiceMenu = invoiceMenu;
+        this.mainMenu = mainMenu;
     }
 
     @Override
@@ -43,7 +45,7 @@ public class DashboardMenu implements Menu {
                     new ReportMenu().show();
                     break;
                 case "5":
-                    new MainMenu().show();
+                    mainMenu.show();
                 default:
                     System.out.println("Lựa chọn không hợp lệ!");
             }

@@ -5,6 +5,14 @@ import presentation.impl.Menu;
 import java.util.Scanner;
 
 public class MainMenu implements Menu {
+    private LoginView loginView;
+
+    public MainMenu() {
+    }
+
+    public void setLoginView(LoginView loginView) {
+        this.loginView = loginView;
+    }
 
     @Override
     public void show() {
@@ -19,7 +27,7 @@ public class MainMenu implements Menu {
 
             switch (choice) {
                 case "1":
-                    new LoginView().show();
+                    loginView.show();
                     break;
                 case "2":
                     System.out.println("Tạm biệt!");

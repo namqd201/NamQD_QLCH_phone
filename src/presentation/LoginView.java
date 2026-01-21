@@ -8,10 +8,11 @@ import java.util.Scanner;
 
 public class LoginView implements Menu {
     private final LoginServiceImpl service;
-    private DashboardMenu dashboardMenu;
+    private final DashboardMenu dashboardMenu;
 
-    public LoginView(LoginServiceImpl service) {
+    public LoginView(LoginServiceImpl service, DashboardMenu dashboardMenu) {
         this.service = service;
+        this.dashboardMenu = dashboardMenu;
     }
 
 
