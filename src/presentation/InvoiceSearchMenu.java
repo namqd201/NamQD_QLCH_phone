@@ -1,10 +1,18 @@
 package presentation;
 
+import business.impl.InvoiceServiceImpl;
 import presentation.impl.Menu;
 
 import java.util.Scanner;
 
 public class InvoiceSearchMenu implements Menu {
+
+    private final InvoiceServiceImpl invoiceService;
+
+    public InvoiceSearchMenu(InvoiceServiceImpl invoiceService) {
+        this.invoiceService = invoiceService;
+    }
+
     @Override
     public void show() {
         Scanner sc = new Scanner(System.in);

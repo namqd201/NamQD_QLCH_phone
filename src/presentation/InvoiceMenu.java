@@ -1,10 +1,17 @@
 package presentation;
 
+import business.impl.InvoiceServiceImpl;
 import presentation.impl.Menu;
 
 import java.util.Scanner;
 
 public class InvoiceMenu implements Menu {
+
+    private final InvoiceServiceImpl invoiceService;
+
+    public InvoiceMenu(InvoiceServiceImpl invoiceService) {
+        this.invoiceService = invoiceService;
+    }
 
     @Override
     public void show() {
