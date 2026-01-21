@@ -7,10 +7,12 @@ import java.util.Scanner;
 public class DashboardMenu implements Menu {
     private final ProductMenu productMenu;
     private final CustomerMenu customerMenu;
+    private final InvoiceMenu invoiceMenu;
 
-    public DashboardMenu(ProductMenu productMenu, CustomerMenu customerMenu) {
+    public DashboardMenu(ProductMenu productMenu, CustomerMenu customerMenu, InvoiceMenu invoiceMenu) {
         this.productMenu = productMenu;
         this.customerMenu = customerMenu;
+        this.invoiceMenu = invoiceMenu;
     }
 
     @Override
@@ -35,7 +37,7 @@ public class DashboardMenu implements Menu {
                     customerMenu.show();
                     break;
                 case "3":
-                    new InvoiceMenu().show();
+                    invoiceMenu.show();
                     break;
                 case "4":
                     new ReportMenu().show();

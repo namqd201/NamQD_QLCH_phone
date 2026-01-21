@@ -8,10 +8,7 @@ import java.util.List;
 public interface IInvoiceService {
 
     // Thêm hóa đơn + chi tiết + trừ kho
-    Boolean createInvoice(Invoice invoice, List<InvoiceDetail> details);
-
-    // Cập nhật hóa đơn + chi tiết + hoàn kho + trừ lại
-    Boolean updateInvoice(Invoice invoice, List<InvoiceDetail> newDetails);
+    int createInvoice(Invoice invoice, List<InvoiceDetail> details);
 
     // Xóa hóa đơn + hoàn kho
     Boolean deleteInvoice(int invoiceId);

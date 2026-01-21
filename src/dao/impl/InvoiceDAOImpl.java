@@ -5,6 +5,7 @@ import model.Invoice;
 import model.InvoiceDetail;
 import utils.DBUtil;
 
+import java.math.BigDecimal;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -29,7 +30,7 @@ public class InvoiceDAOImpl implements IInvoiceDAO {
 
             ps.executeUpdate();
 
-            ResultSet rs = ps.getGeneratedKeys(); // Lấy danh sách các key tự động tạo
+            ResultSet rs = ps.getGeneratedKeys(); // Lấy danh sách key tự động tạo
             if (rs.next()) {
                 return rs.getInt(1);// Trả về giá trị ID ở cột đầu tiên
             }
@@ -56,40 +57,37 @@ public class InvoiceDAOImpl implements IInvoiceDAO {
         }
     }
 
-    @Override
-    public Boolean updateInvoice(Invoice invoice) {
-        String sql = "update invoice set customer_id=?, total_amount=? where id=?";
+    public BigDecimal calculateTotalAmount(int invoiceId) throws SQLException {
+
+        String sql = "SELECT SUM(quantity * unit_price) " +
+                "FROM invoice_details " +
+                "WHERE invoice_id = ?";
+
         try (Connection conn = dbUtil.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, invoiceId);
+            ResultSet rs = ps.executeQuery();
 
-            ps.setInt(1, invoice.getCustomerId());
-            ps.setBigDecimal(2, invoice.getTotalAmount());
-            ps.setInt(3, invoice.getId());
-
-            return ps.executeUpdate() > 0;
-
-        } catch (SQLException e) {
-            e.printStackTrace();
+            if (rs.next()) {
+                return rs.getBigDecimal(1);
+            }
         }
-        return false;
+        return BigDecimal.ZERO;
     }
 
-    //update sản phẩm ở chi tiết hóa đơn
-    public Boolean updateInvoiceDetail(InvoiceDetail detail)
+    public boolean updateInvoiceTotalAmount(int invoiceId, BigDecimal totalAmount)
             throws SQLException {
 
-        String sql = "UPDATE invoice_details SET product_id = ?, quantity = ?, unit_price = ?";
+        String sql = "UPDATE invoice SET total_amount = ? WHERE id = ?";
 
         try (Connection conn = dbUtil.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, detail.getProductId());
-            ps.setInt(2, detail.getQuantity());
-            ps.setBigDecimal(3, detail.getUnitPrice());
-            ps.setInt(4, detail.getId());
-
+            ps.setBigDecimal(1, totalAmount);
+            ps.setInt(2, invoiceId);
             return ps.executeUpdate() > 0;
         }
     }
+
 
     // xóa hóa đơn
     @Override

@@ -1,8 +1,10 @@
 package presentation;
 
 import business.impl.InvoiceServiceImpl;
+import model.Invoice;
 import presentation.impl.Menu;
 
+import java.util.List;
 import java.util.Scanner;
 
 public class InvoiceSearchMenu implements Menu {
@@ -30,27 +32,19 @@ public class InvoiceSearchMenu implements Menu {
 
             switch (choice) {
                 case "1":
-                    System.out.print("Nhập tên khách hàng: ");
-                    String customerName = sc.nextLine();
-                    System.out.println("TODO: Tìm hóa đơn theo tên khách hàng: " + customerName);
+                    searchByCustomerName(sc);
                     break;
 
                 case "2":
-                    System.out.print("Nhập ngày (yyyy-mm-dd): ");
-                    String date = sc.nextLine();
-                    System.out.println("TODO: Tìm hóa đơn theo ngày: " + date);
+
                     break;
 
                 case "3":
-                    System.out.print("Nhập tháng (1-12): ");
-                    String month = sc.nextLine();
-                    System.out.println("TODO: Tìm hóa đơn theo tháng: " + month);
+
                     break;
 
                 case "4":
-                    System.out.print("Nhập năm (yyyy): ");
-                    String year = sc.nextLine();
-                    System.out.println("TODO: Tìm hóa đơn theo năm: " + year);
+
                     break;
 
                 case "5":
@@ -59,6 +53,137 @@ public class InvoiceSearchMenu implements Menu {
                 default:
                     System.out.println("Lựa chọn không hợp lệ, vui lòng nhập lại!");
             }
+        }
+    }
+
+    private void searchByCustomerName(Scanner sc) {
+        System.out.print("Nhập tên khách hàng: ");
+        String name = sc.nextLine();
+
+        List<Invoice> invoices =
+                invoiceService.findInvoicesByCustomerName(name);
+
+        if (invoices.isEmpty()) {
+            System.out.println("Không tìm thấy hóa đơn nào!");
+            return;
+        }
+
+        System.out.println("----- KẾT QUẢ TÌM KIẾM -----");
+        System.out.printf("%-5s %-5s %-20s %-20s %-15s%n",
+                "ID", "ID khách hàng", "Tên khách hàng", "Ngày tạo", "Tổng tiền");
+
+        for (Invoice i : invoices) {
+            System.out.printf("%-5d %-5d %-20s %-20s %-15s%n",
+                    i.getId(),
+                    i.getCustomerId(),
+                    i.getCustomerName(),
+                    i.getCreatedAt(),
+                    i.getTotalAmount());
+        }
+    }
+
+    private void searchByDay(Scanner sc) {
+        int day;
+
+        while (true) {
+            try {
+                System.out.print("Nhập ngày (1-31): ");
+                day = Integer.parseInt(sc.nextLine());
+                break;
+            } catch (NumberFormatException e) {
+                System.out.println("Ngày phải là số!");
+            }
+        }
+
+        List<Invoice> invoices =
+                invoiceService.findInvoiceByDay(day);
+
+        if (invoices.isEmpty()) {
+            System.out.println("Không tìm thấy hóa đơn nào!");
+            return;
+        }
+
+        System.out.println("----- KẾT QUẢ TÌM KIẾM -----");
+        System.out.printf("%-5s %-5s %-20s %-20s %-15s%n",
+                "ID", "ID khách hàng", "Tên khách hàng", "Ngày tạo", "Tổng tiền");
+
+        for (Invoice i : invoices) {
+            System.out.printf("%-5d %-5d %-20s %-20s %-15s%n",
+                    i.getId(),
+                    i.getCustomerId(),
+                    i.getCustomerName(),
+                    i.getCreatedAt(),
+                    i.getTotalAmount());
+        }
+    }
+
+    private void searchByMonth(Scanner sc) {
+        int month;
+
+        while (true) {
+            try {
+                System.out.print("Nhập tháng (1-12): ");
+                month = Integer.parseInt(sc.nextLine());
+                break;
+            } catch (NumberFormatException e) {
+                System.out.println("Tháng phải là số!");
+            }
+        }
+
+        List<Invoice> invoices =
+                invoiceService.findInvoiceByMonth(month);
+
+        if (invoices.isEmpty()) {
+            System.out.println("Không tìm thấy hóa đơn nào!");
+            return;
+        }
+
+        System.out.println("----- KẾT QUẢ TÌM KIẾM -----");
+        System.out.printf("%-5s %-5s %-20s %-20s %-15s%n",
+                "ID", "ID khách hàng", "Tên khách hàng", "Ngày tạo", "Tổng tiền");
+
+        for (Invoice i : invoices) {
+            System.out.printf("%-5d %-5d %-20s %-20s %-15s%n",
+                    i.getId(),
+                    i.getCustomerId(),
+                    i.getCustomerName(),
+                    i.getCreatedAt(),
+                    i.getTotalAmount());
+        }
+    }
+
+    private void searchByYear(Scanner sc) {
+        int year;
+
+        while (true) {
+            try {
+                System.out.print("Nhập năm: ");
+                year = Integer.parseInt(sc.nextLine());
+                break;
+            } catch (NumberFormatException e) {
+                System.out.println("Năm phải là số!");
+            }
+        }
+
+        List<Invoice> invoices =
+                invoiceService.findInvoiceByYear(year);
+
+        if (invoices.isEmpty()) {
+            System.out.println("Không tìm thấy hóa đơn nào!");
+            return;
+        }
+
+        System.out.println("----- KẾT QUẢ TÌM KIẾM -----");
+        System.out.printf("%-5s %-5s %-20s %-20s %-15s%n",
+                "ID", "ID khách hàng", "Tên khách hàng", "Ngày tạo", "Tổng tiền");
+
+        for (Invoice i : invoices) {
+            System.out.printf("%-5d %-5d %-20s %-20s %-15s%n",
+                    i.getId(),
+                    i.getCustomerId(),
+                    i.getCustomerName(),
+                    i.getCreatedAt(),
+                    i.getTotalAmount());
         }
     }
 }

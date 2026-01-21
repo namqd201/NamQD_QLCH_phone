@@ -1,12 +1,20 @@
 package presentation;
 
+import business.impl.LoginServiceImpl;
 import dao.impl.LoginDAOImpl;
 import presentation.impl.Menu;
 
 import java.util.Scanner;
 
 public class LoginView implements Menu {
-    private final LoginDAOImpl dao = new LoginDAOImpl();
+    private final LoginServiceImpl service;
+    private DashboardMenu dashboardMenu;
+
+    public LoginView(LoginServiceImpl service) {
+        this.service = service;
+    }
+
+
     @Override
     public void show() {
         Scanner sc = new Scanner(System.in);
@@ -19,11 +27,11 @@ public class LoginView implements Menu {
             System.out.print("Password: ");
             String password = sc.nextLine();
 
-            Boolean success = dao.login(username, password);
+            Boolean success = service.login(username, password);
 
             if (success) {
                 System.out.println("Đăng nhập thành công!");
-                new DashboardMenu().show();
+                dashboardMenu.show();
                 return;
             } else {
                 System.out.println("Sai tài khoản hoặc mật khẩu!");

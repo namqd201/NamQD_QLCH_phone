@@ -6,6 +6,7 @@ import model.Invoice;
 import model.InvoiceDetail;
 import utils.DBUtil;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.util.List;
 
@@ -21,18 +22,18 @@ public class InvoiceServiceImpl implements IInvoiceService {
     }
 
     @Override
-    public Boolean createInvoice(Invoice invoice, List<InvoiceDetail> details) {
-        try(Connection conn = dbUtil.getConnection()){
+    public int createInvoice(Invoice invoice, List<InvoiceDetail> details) {
+        try (Connection conn = dbUtil.getConnection()) {
             conn.setAutoCommit(false);
 
-            //thêm hóa đơn
+            // 1. thêm hóa đơn
             int invoiceId = invoiceDAO.addInvoice(invoice);
             if (invoiceId == -1) {
-                conn.rollback(); // nếu thêm thất bại, rollback
-                return false;
+                conn.rollback();
+                return -1;
             }
 
-            // thêm chi tiết hóa đơn + trừ kho
+            // thêm chi tiết + trừ kho
             for (InvoiceDetail d : details) {
                 d.setInvoiceId(invoiceId);
 
@@ -42,63 +43,28 @@ public class InvoiceServiceImpl implements IInvoiceService {
                 if (!stockOk) {
                     conn.rollback();
                     System.out.println("Không đủ tồn kho cho productId = " + d.getProductId());
-                    return false;
+                    return -1;
                 }
-                invoiceDAO.addInvoiceDetail(d);
-            }
-            conn.commit();
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
 
-    @Override
-    public Boolean updateInvoice(Invoice invoice, List<InvoiceDetail> newDetails) {
-        try (Connection conn = dbUtil.getConnection()) {
-            conn.setAutoCommit(false);
-
-            // Lấy detail cũ
-            List<InvoiceDetail> oldDetails =
-                    invoiceDAO.getInvoiceDetailsByInvoiceId(invoice.getId());
-
-            // Hoàn kho
-            for (InvoiceDetail d : oldDetails) {
-                invoiceDAO.increaseStock(conn, d.getProductId(), d.getQuantity());
-            }
-
-            // Xóa detail cũ
-            invoiceDAO.deleteInvoiceDetailsByInvoiceId(conn, invoice.getId());
-
-            // Update invoice
-            if (!invoiceDAO.updateInvoice(invoice)) {
-                conn.rollback();
-                return false;
-            }
-
-            // Insert detail mới + trừ kho
-            for (InvoiceDetail d : newDetails) {
-                d.setInvoiceId(invoice.getId());
-
-                boolean stockOk = invoiceDAO.decreaseStock(
-                        conn, d.getProductId(), d.getQuantity());
-
-                if (!stockOk) {
+                boolean added = invoiceDAO.addInvoiceDetail(d);
+                if (!added) {
                     conn.rollback();
-                    System.out.println("Không đủ tồn kho khi update");
-                    return false;
+                    return -1;
                 }
-
-                invoiceDAO.addInvoiceDetail(d);
             }
 
+            // tính tổng tiền
+            BigDecimal total = invoiceDAO.calculateTotalAmount(invoiceId);
+
+            // cập nhật total_amount
+            invoiceDAO.updateInvoiceTotalAmount(invoiceId, total);
+
             conn.commit();
-            return true;
+            return invoiceId;
 
         } catch (Exception e) {
             e.printStackTrace();
-            return false;
+            return -1;
         }
     }
 
