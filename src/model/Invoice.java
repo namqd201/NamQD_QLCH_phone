@@ -7,6 +7,7 @@ import java.util.List;
 public class Invoice {
     private int id;
     private int customerId;
+    private String customerName;
     private LocalDateTime createdAt;
     private BigDecimal totalAmount;
 
@@ -15,9 +16,10 @@ public class Invoice {
     public Invoice() {
     }
 
-    public Invoice(int id, int customerId, LocalDateTime createdAt, BigDecimal totalAmount,  List<InvoiceDetail> details) {
+    public Invoice(int id, int customerId, String customerName, LocalDateTime createdAt, BigDecimal totalAmount,  List<InvoiceDetail> details) {
         this.id = id;
         this.customerId = customerId;
+        this.customerName = customerName;
         this.createdAt = createdAt;
         this.totalAmount = totalAmount;
         this.details = details;
@@ -37,6 +39,14 @@ public class Invoice {
 
     public void setCustomerId(int customerId) {
         this.customerId = customerId;
+    }
+
+    public String getCustomerName() {
+        return customerName;
+    }
+
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
     }
 
     public LocalDateTime getCreatedAt() {

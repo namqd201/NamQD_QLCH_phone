@@ -9,6 +9,7 @@ public interface IInvoiceDAO {
     int addInvoice(Invoice invoice);
     Boolean updateInvoice(Invoice invoice);
     Boolean deleteInvoice(Invoice invoice);
+    Invoice getInvoice(int id);
     List<InvoiceDetail> getInvoiceDetailsByInvoiceId(int id);
     List<Invoice> getAllInvoices();
     List<Invoice> findInvoicesByCustomerName(String customerName);

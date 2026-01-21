@@ -109,12 +109,42 @@ public class InvoiceDAOImpl implements IInvoiceDAO {
     }
 
     //xóa chi tiết hóa đơn
-    
+    public boolean deleteInvoiceDetailsByInvoiceId(
+            Connection conn, int invoiceId) throws SQLException {
+
+        String sql = "DELETE FROM invoice_details WHERE invoice_id = ?";
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, invoiceId);
+            return ps.executeUpdate() > 0;
+        }
+    }
+
+    @Override
+    public Invoice getInvoice(int id) {
+        String sql = "select * from invoice where id = ?";
+        try(Connection conn = dbUtil.getConnection();
+        PreparedStatement ps = conn.prepareStatement(sql)){
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                Invoice invoice = new Invoice();
+                invoice.setId(rs.getInt("id"));
+                invoice.setCustomerId(rs.getInt("customer_id"));
+                invoice.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
+                invoice.setTotalAmount(rs.getBigDecimal("total_amount"));
+                return invoice;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
     @Override
     public List<InvoiceDetail> getInvoiceDetailsByInvoiceId(int invoiceId) {
-        String sql = "SELECT d.id, d.product_id, p.name AS product_name, d.quantity, d.unit_price " +
-                "FROM invoice_details d JOIN product p ON d.product_id = p.id WHERE d.invoice_id = ?";
+        String sql = "SELECT d.id, d.product_id, d.quantity, d.unit_price " +
+                "FROM invoice_details d WHERE d.invoice_id = ?";
 
         List<InvoiceDetail> details = new ArrayList<>();
 
@@ -128,7 +158,6 @@ public class InvoiceDAOImpl implements IInvoiceDAO {
                 d.setId(rs.getInt("id"));
                 d.setInvoiceId(invoiceId);
                 d.setProductId(rs.getInt("product_id"));
-                d.setProductName(rs.getString("product_name"));
                 d.setQuantity(rs.getInt("quantity"));
                 d.setUnitPrice(rs.getBigDecimal("unit_price"));
                 details.add(d);
@@ -139,28 +168,202 @@ public class InvoiceDAOImpl implements IInvoiceDAO {
         return details;
     }
 
+    //lấy tất cả hóa đơn
     @Override
     public List<Invoice> getAllInvoices() {
-        return List.of();
+        String sql = " SELECT i.id, i.customer_id, c.name, i.created_at, i.total_amount " +
+                "FROM invoice i " +
+                "JOIN customer c ON i.customer_id = c.id " +
+                "ORDER BY i.created_at DESC";
+
+        List<Invoice> list = new ArrayList<>();
+
+        try (Connection conn = dbUtil.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                Invoice invoice = new Invoice();
+                invoice.setId(rs.getInt("id"));
+                invoice.setCustomerId(rs.getInt("customer_id"));
+                invoice.setCustomerName(rs.getString("name"));
+                invoice.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
+                invoice.setTotalAmount(rs.getBigDecimal("total_amount"));
+                list.add(invoice);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
     }
 
+    // tìm hóa đơn theo tên khách hàng
     @Override
     public List<Invoice> findInvoicesByCustomerName(String customerName) {
-        return List.of();
+        String sql = "SELECT i.id, i.customer_id, c.name AS customer_name, i.created_at, i.total_amount " +
+                "FROM invoice i " +
+                "JOIN customer c ON i.customer_id = c.id " +
+                "WHERE LOWER(c.name) LIKE LOWER(?) " +
+                "ORDER BY i.created_at DESC";
+
+        List<Invoice> list = new ArrayList<>();
+
+        try (Connection conn = dbUtil.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, "%" + customerName + "%");
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Invoice invoice = new Invoice();
+                    invoice.setId(rs.getInt("id"));
+                    invoice.setCustomerId(rs.getInt("customer_id"));
+                    invoice.setCustomerName(rs.getString("name"));
+                    invoice.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
+                    invoice.setTotalAmount(rs.getBigDecimal("total_amount"));
+                    list.add(invoice);
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
     }
 
+    //list hóa đơn theo ngày
     @Override
     public List<Invoice> findInvoiceByDay(int day) {
-        return List.of();
+        String sql = " SELECT i.id, i.customer_id, c.name AS customer_name, i.created_at, i.total_amount " +
+                "FROM invoice i " +
+                "JOIN customer c ON i.customer_id = c.id " +
+                "WHERE EXTRACT(DAY FROM i.created_at) = ? " +
+                "ORDER BY i.created_at DESC";
+
+        List<Invoice> list = new ArrayList<>();
+
+        try (Connection conn = dbUtil.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, day);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Invoice invoice = new Invoice();
+                    invoice.setId(rs.getInt("id"));
+                    invoice.setCustomerId(rs.getInt("customer_id"));
+                    invoice.setCustomerName(rs.getString("name"));
+                    invoice.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
+                    invoice.setTotalAmount(rs.getBigDecimal("total_amount"));
+                    list.add(invoice);
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
     }
 
+    //list hóa đơn theo tháng
     @Override
     public List<Invoice> findInvoiceByMonth(int month) {
-        return List.of();
+        String sql = " SELECT i.id, i.customer_id, c.name AS customer_name, i.created_at, i.total_amount " +
+                "FROM invoice i " +
+                "JOIN customer c ON i.customer_id = c.id " +
+                "WHERE EXTRACT(MONTH FROM i.created_at) = ? " +
+                "ORDER BY i.created_at DESC";
+
+        List<Invoice> list = new ArrayList<>();
+
+        try (Connection conn = dbUtil.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, month);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Invoice invoice = new Invoice();
+                    invoice.setId(rs.getInt("id"));
+                    invoice.setCustomerId(rs.getInt("customer_id"));
+                    invoice.setCustomerName(rs.getString("name"));
+                    invoice.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
+                    invoice.setTotalAmount(rs.getBigDecimal("total_amount"));
+                    list.add(invoice);
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
     }
 
+    // list hóa đơn theo năm
     @Override
     public List<Invoice> findInvoiceByYear(int year) {
-        return List.of();
+        String sql = " SELECT i.id, i.customer_id, c.name AS customer_name, i.created_at, i.total_amount " +
+                "FROM invoice i " +
+                "JOIN customer c ON i.customer_id = c.id " +
+                "WHERE EXTRACT(YEAR FROM i.created_at) = ? " +
+                "ORDER BY i.created_at DESC";
+
+        List<Invoice> list = new ArrayList<>();
+
+        try (Connection conn = dbUtil.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, year);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Invoice invoice = new Invoice();
+                    invoice.setId(rs.getInt("id"));
+                    invoice.setCustomerId(rs.getInt("customer_id"));
+                    invoice.setCustomerName(rs.getString("name"));
+                    invoice.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
+                    invoice.setTotalAmount(rs.getBigDecimal("total_amount"));
+                    list.add(invoice);
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    //cập nhật số lượng sản phẩm sau khi thêm hóa đơn
+    public boolean decreaseStock(
+            Connection conn, int productId, int quantity) throws SQLException {
+
+        String sql = "UPDATE product SET stock = stock - ? WHERE id = ? AND stock >= ?"; // stock>=0 => check stock không được âm
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, quantity);
+            ps.setInt(2, productId);
+            ps.setInt(3, quantity);
+
+            return ps.executeUpdate() > 0;
+        }
+    }
+
+    // cộng lại số lượng trong kho sau khi hoàn trả
+    public boolean increaseStock(
+            Connection conn, int productId, int quantity) throws SQLException {
+
+        String sql = """
+        UPDATE product
+        SET stock = stock + ?
+        WHERE id = ?
+    """;
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, quantity);
+            ps.setInt(2, productId);
+
+            return ps.executeUpdate() > 0;
+        }
     }
 }
