@@ -35,11 +35,11 @@ public class CustomerSeviceImpl implements ICustomerService {
 
     @Override
     public List<Customer> getAllCustomers() {
-        return List.of();
+        return customerDAO.getAllCustomers();
     }
 
     @Override
     public Customer getCustomerById(int id) {
-        return null;
+        return customerDAO.getCustomerById(id);
     }
 }
