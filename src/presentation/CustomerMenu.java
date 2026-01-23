@@ -63,18 +63,26 @@ public class CustomerMenu implements Menu {
 
         String phone;
         while (true) {
-            System.out.print("Phone number: ");
+            System.out.print("Số điện thoại (10 số, bắt đầu 03/08/09): ");
             phone = sc.nextLine().trim();
-            if (!phone.isEmpty()) break;
-            System.out.println("Phone number không được để trống!");
+            // ^(03|08|09) : Bắt đầu bằng 03 hoặc 08 hoặc 09
+            // [0-9]{8}$   : Theo sau là đúng 8 chữ số nữa (tổng cộng 10 số)
+            if (phone.matches("^(03|08|09)[0-9]{8}$")) {
+                break;
+            }
+            System.out.println("Lỗi: Số điện thoại phải có 10 chữ số và bắt đầu bằng 03, 08 hoặc 09!");
         }
 
         String email;
         while (true) {
             System.out.print("Email: ");
-            email = sc.nextLine();
-            if (!email.isEmpty()) break;
-            System.out.println("Email không được để trống!");
+            email = sc.nextLine().trim();
+            // chữ/số + @ + chữ/số + . + tên miền
+            String emailRegex = "^[A-Za-z0-9+_.-]+@(.+)$";
+            if (email.matches(emailRegex)) {
+                break;
+            }
+            System.out.println("Lỗi: Định dạng email không hợp lệ (Ví dụ: abc@gmail.com)!");
         }
 
         String address;
@@ -132,18 +140,26 @@ public class CustomerMenu implements Menu {
 
         String phone;
         while (true) {
-            System.out.print("Phone number: ");
+            System.out.print("Số điện thoại (10 số, bắt đầu 03/08/09): ");
             phone = sc.nextLine().trim();
-            if (!phone.isEmpty()) break;
-            System.out.println("Phone number không được để trống!");
+            // ^(03|08|09) : Bắt đầu bằng 03 hoặc 08 hoặc 09
+            // [0-9]{8}$   : Theo sau là đúng 8 chữ số nữa (tổng cộng 10 số)
+            if (phone.matches("^(03|08|09)[0-9]{8}$")) {
+                break;
+            }
+            System.out.println("Lỗi: Số điện thoại phải có 10 chữ số và bắt đầu bằng 03, 08 hoặc 09!");
         }
 
         String email;
         while (true) {
             System.out.print("Email: ");
-            email = sc.nextLine();
-            if (!email.isEmpty()) break;
-            System.out.println("Email không được để trống!");
+            email = sc.nextLine().trim();
+            // chữ/số + @ + chữ/số + . + tên miền
+            String emailRegex = "^[A-Za-z0-9+_.-]+@(.+)$";
+            if (email.matches(emailRegex)) {
+                break;
+            }
+            System.out.println("Lỗi: Định dạng email không hợp lệ (Ví dụ: abc@gmail.com)!");
         }
 
         String address;

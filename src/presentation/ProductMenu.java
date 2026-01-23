@@ -203,7 +203,7 @@ public class ProductMenu implements Menu {
         }
 
         Product product = new Product();
-        product.setProductId(id);
+        product.setProductId(oldProduct.getProductId());
         product.setProductName(name);
         product.setBrand(brand);
         product.setProductPrice(price);
