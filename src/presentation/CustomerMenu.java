@@ -142,6 +142,12 @@ public class CustomerMenu implements Menu {
         while (true) {
             System.out.print("Số điện thoại (10 số, bắt đầu 03/08/09): ");
             phone = sc.nextLine().trim();
+
+            //nếu sđt trống, lấy sdt cũ
+            if(phone.isEmpty()){
+                phone = oldCustomer.getPhone();
+                break;
+            }
             // ^(03|08|09) : Bắt đầu bằng 03 hoặc 08 hoặc 09
             // [0-9]{8}$   : Theo sau là đúng 8 chữ số nữa (tổng cộng 10 số)
             if (phone.matches("^(03|08|09)[0-9]{8}$")) {
@@ -154,6 +160,12 @@ public class CustomerMenu implements Menu {
         while (true) {
             System.out.print("Email: ");
             email = sc.nextLine().trim();
+
+            //nếu email để trống, lấy email cũ
+            if(email.isEmpty()){
+                email = oldCustomer.getEmail();
+                break;
+            }
             // chữ/số + @ + chữ/số + . + tên miền
             String emailRegex = "^[A-Za-z0-9+_.-]+@(.+)$";
             if (email.matches(emailRegex)) {
@@ -165,9 +177,11 @@ public class CustomerMenu implements Menu {
         String address;
         while (true) {
             System.out.print("Đại chỉ: ");
-            address = sc.nextLine();
-            if (!address.isEmpty()) break;
-            System.out.println("Address không được để trống!");
+            address = sc.nextLine().trim();
+            if(address.isEmpty()){
+                address = oldCustomer.getAddress();
+                break;
+            }
         }
         Customer customer = new Customer();
         customer.setId(oldCustomer.getId());
