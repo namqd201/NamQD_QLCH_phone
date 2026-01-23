@@ -26,7 +26,14 @@ public class InvoiceServiceImpl implements IInvoiceService {
         try (Connection conn = dbUtil.getConnection()) {
             conn.setAutoCommit(false);
 
-            // 1. thêm hóa đơn
+
+            BigDecimal total = BigDecimal.ZERO;
+            for (InvoiceDetail d : details) {
+                total = total.add(d.getUnitPrice().multiply(new BigDecimal(d.getQuantity())));
+            }
+            invoice.setTotalAmount(total);
+
+            // thêm hóa đơn
             int invoiceId = invoiceDAO.addInvoice(invoice);
             if (invoiceId == -1) {
                 conn.rollback();
@@ -54,7 +61,7 @@ public class InvoiceServiceImpl implements IInvoiceService {
             }
 
             // tính tổng tiền
-            BigDecimal total = invoiceDAO.calculateTotalAmount(invoiceId);
+            //BigDecimal total = invoiceDAO.calculateTotalAmount(invoiceId);
 
             // cập nhật total_amount
             invoiceDAO.updateInvoiceTotalAmount(invoiceId, total);
@@ -126,13 +133,13 @@ public class InvoiceServiceImpl implements IInvoiceService {
     }
 
     @Override
-    public List<Invoice> findInvoiceByDay(int day) {
-        return invoiceDAO.findInvoiceByDay(day);
+    public List<Invoice> findInvoiceByDay(int day, int month, int year) {
+        return invoiceDAO.findInvoiceByDay(day, month, year);
     }
 
     @Override
-    public List<Invoice> findInvoiceByMonth(int month) {
-        return invoiceDAO.findInvoiceByMonth(month);
+    public List<Invoice> findInvoiceByMonth(int month, int year) {
+        return invoiceDAO.findInvoiceByMonth(month, year);
     }
 
     @Override

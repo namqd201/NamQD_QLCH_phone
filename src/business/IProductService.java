@@ -6,11 +6,11 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public interface IProductService {
-    boolean addProduct(Product product);
+    Boolean addProduct(Product product);
 
-    boolean updateProduct(Product product);
+    Boolean updateProduct(Product product);
 
-    boolean deleteProduct(int id);
+    Boolean deleteProduct(int id);
 
     Product findById(int id);
 

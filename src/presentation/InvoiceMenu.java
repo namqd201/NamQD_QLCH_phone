@@ -1,10 +1,12 @@
 package presentation;
 
 import business.impl.InvoiceServiceImpl;
+import business.impl.ProductServiceImpl;
 import model.Invoice;
 import model.InvoiceDetail;
 import presentation.impl.Menu;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -13,10 +15,12 @@ public class InvoiceMenu implements Menu {
 
     private final InvoiceServiceImpl invoiceService;
     private final InvoiceSearchMenu invoiceSearchMenu;
+    private final ProductServiceImpl productService;
 
-    public InvoiceMenu(InvoiceServiceImpl invoiceService, InvoiceSearchMenu invoiceSearchMenu) {
+    public InvoiceMenu(InvoiceServiceImpl invoiceService, InvoiceSearchMenu invoiceSearchMenu, ProductServiceImpl productService) {
         this.invoiceService = invoiceService;
         this.invoiceSearchMenu = invoiceSearchMenu;
+        this.productService = productService;
     }
 
     @Override
@@ -182,10 +186,12 @@ public class InvoiceMenu implements Menu {
                 }
             }
 
+            BigDecimal price = productService.findPriceById(productId);
+
             InvoiceDetail detail = new InvoiceDetail();
             detail.setProductId(productId);
             detail.setQuantity(quantity);
-            // không set unitPrice
+            detail.setUnitPrice(price);
             details.add(detail);
         }
 

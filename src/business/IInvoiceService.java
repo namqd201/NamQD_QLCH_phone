@@ -20,9 +20,9 @@ public interface IInvoiceService {
 
     List<Invoice> findInvoicesByCustomerName(String name);
 
-    List<Invoice> findInvoiceByDay(int day);
+    List<Invoice> findInvoiceByDay(int day, int month, int year);
 
-    List<Invoice> findInvoiceByMonth(int month);
+    List<Invoice> findInvoiceByMonth(int month, int year);
 
     List<Invoice> findInvoiceByYear(int year);
 

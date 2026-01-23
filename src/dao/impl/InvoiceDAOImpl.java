@@ -59,7 +59,7 @@ public class InvoiceDAOImpl implements IInvoiceDAO {
 
     public BigDecimal calculateTotalAmount(int invoiceId) throws SQLException {
 
-        String sql = "SELECT SUM(quantity * unit_price) " +
+        String sql = "SELECT COALESCE(SUM(quantity * unit_price), 0) " +
                 "FROM invoice_details " +
                 "WHERE invoice_id = ?";
 
@@ -199,7 +199,7 @@ public class InvoiceDAOImpl implements IInvoiceDAO {
     // tìm hóa đơn theo tên khách hàng
     @Override
     public List<Invoice> findInvoicesByCustomerName(String customerName) {
-        String sql = "SELECT i.id, i.customer_id, c.name AS customer_name, i.created_at, i.total_amount " +
+        String sql = "SELECT i.id, i.customer_id, c.name, i.created_at, i.total_amount " +
                 "FROM invoice i " +
                 "JOIN customer c ON i.customer_id = c.id " +
                 "WHERE LOWER(c.name) LIKE LOWER(?) " +
@@ -232,11 +232,13 @@ public class InvoiceDAOImpl implements IInvoiceDAO {
 
     //list hóa đơn theo ngày
     @Override
-    public List<Invoice> findInvoiceByDay(int day) {
-        String sql = " SELECT i.id, i.customer_id, c.name AS customer_name, i.created_at, i.total_amount " +
+    public List<Invoice> findInvoiceByDay(int day, int month, int year) {
+        String sql = " SELECT i.id, i.customer_id, c.name, i.created_at, i.total_amount " +
                 "FROM invoice i " +
                 "JOIN customer c ON i.customer_id = c.id " +
                 "WHERE EXTRACT(DAY FROM i.created_at) = ? " +
+                "  AND EXTRACT(MONTH FROM i.created_at) = ? " +
+                "  AND EXTRACT(YEAR FROM i.created_at) = ? " +
                 "ORDER BY i.created_at DESC";
 
         List<Invoice> list = new ArrayList<>();
@@ -245,6 +247,8 @@ public class InvoiceDAOImpl implements IInvoiceDAO {
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, day);
+            ps.setInt(2, month);
+            ps.setInt(3, year);
 
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
@@ -266,11 +270,12 @@ public class InvoiceDAOImpl implements IInvoiceDAO {
 
     //list hóa đơn theo tháng
     @Override
-    public List<Invoice> findInvoiceByMonth(int month) {
-        String sql = " SELECT i.id, i.customer_id, c.name AS customer_name, i.created_at, i.total_amount " +
+    public List<Invoice> findInvoiceByMonth(int month, int year) {
+        String sql = " SELECT i.id, i.customer_id, c.name, i.created_at, i.total_amount " +
                 "FROM invoice i " +
                 "JOIN customer c ON i.customer_id = c.id " +
                 "WHERE EXTRACT(MONTH FROM i.created_at) = ? " +
+                "  AND EXTRACT(YEAR FROM i.created_at) = ? " +
                 "ORDER BY i.created_at DESC";
 
         List<Invoice> list = new ArrayList<>();
@@ -279,6 +284,7 @@ public class InvoiceDAOImpl implements IInvoiceDAO {
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, month);
+            ps.setInt(2, year);
 
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
@@ -301,7 +307,7 @@ public class InvoiceDAOImpl implements IInvoiceDAO {
     // list hóa đơn theo năm
     @Override
     public List<Invoice> findInvoiceByYear(int year) {
-        String sql = " SELECT i.id, i.customer_id, c.name AS customer_name, i.created_at, i.total_amount " +
+        String sql = " SELECT i.id, i.customer_id, c.name, i.created_at, i.total_amount " +
                 "FROM invoice i " +
                 "JOIN customer c ON i.customer_id = c.id " +
                 "WHERE EXTRACT(YEAR FROM i.created_at) = ? " +

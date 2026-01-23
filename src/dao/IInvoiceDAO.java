@@ -12,7 +12,7 @@ public interface IInvoiceDAO {
     List<InvoiceDetail> getInvoiceDetailsByInvoiceId(int id);
     List<Invoice> getAllInvoices();
     List<Invoice> findInvoicesByCustomerName(String customerName);
-    List<Invoice> findInvoiceByDay(int day);
-    List<Invoice> findInvoiceByMonth(int month);
+    List<Invoice> findInvoiceByDay(int day, int month, int year);
+    List<Invoice> findInvoiceByMonth(int month, int year);
     List<Invoice> findInvoiceByYear(int year);
 }

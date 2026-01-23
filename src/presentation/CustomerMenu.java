@@ -79,9 +79,9 @@ public class CustomerMenu implements Menu {
 
         String address;
         while (true) {
-            System.out.print("Tồn kho: ");
+            System.out.print("Địa chỉ: ");
             address = sc.nextLine();
-            if (address.isEmpty()) break;
+            if (!address.isEmpty()) break;
             System.out.println("Address không được để trống!");
         }
         Customer customer = new Customer();
@@ -104,10 +104,10 @@ public class CustomerMenu implements Menu {
         while (true) {
             try {
                 System.out.print("Nhập id khách hàng muốn cập nhật: ");
-                int id = sc.nextInt();
+                int id = Integer.parseInt(sc.nextLine().trim());
                 oldCustomer = customerSevice.getCustomerById(id);
                 if (oldCustomer == null) {
-                    System.out.println("Sản phẩm không tồn tại!");
+                    System.out.println("Khách hàng không tồn tại!");
                 } else{
                     break;
                 }
@@ -122,8 +122,12 @@ public class CustomerMenu implements Menu {
         while (true) {
             System.out.print("Tên khách hàng: ");
             name = sc.nextLine().trim();
-            if (!name.isEmpty()) break;
-            System.out.println("Tên khách hàng không được để trống!");
+            if (!name.isEmpty()){
+                break;
+            } else {
+                System.out.println("Tên khách hàng không được để trống!");
+            }
+
         }
 
         String phone;
@@ -144,21 +148,22 @@ public class CustomerMenu implements Menu {
 
         String address;
         while (true) {
-            System.out.print("Tồn kho: ");
+            System.out.print("Đại chỉ: ");
             address = sc.nextLine();
-            if (address.isEmpty()) break;
+            if (!address.isEmpty()) break;
             System.out.println("Address không được để trống!");
         }
         Customer customer = new Customer();
+        customer.setId(oldCustomer.getId());
         customer.setName(name);
         customer.setPhone(phone);
         customer.setEmail(email);
         customer.setAddress(address);
 
-        if (customerSevice.addCustomer(customer)) {
-            System.out.println("Thêm khách hàng thành công!");
+        if (customerSevice.updateCustomer(customer)) {
+            System.out.println("Cập nhật khách hàng thành công!");
         } else {
-            System.out.println("Thêm khách hàng thất bại!");
+            System.out.println("Cập nhật khách hàng thất bại!");
         }
     }
 
@@ -170,10 +175,10 @@ public class CustomerMenu implements Menu {
         while (true) {
             try {
                 System.out.print("Nhập id khách hàng muốn xóa: ");
-                id = sc.nextInt();
+                id = Integer.parseInt(sc.nextLine().trim());
                 oldCustomer = customerSevice.getCustomerById(id);
                 if (oldCustomer == null) {
-                    System.out.println("Sản phẩm không tồn tại!");
+                    System.out.println("Khách hàng không tồn tại!");
                 } else{
                     break;
                 }

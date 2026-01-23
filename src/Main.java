@@ -24,7 +24,7 @@ public class Main {
         ProductMenu productMenu = new ProductMenu(productService);
         CustomerMenu customerMenu = new CustomerMenu(customerService);
         InvoiceSearchMenu invoiceSearchMenu = new InvoiceSearchMenu(invoiceService);
-        InvoiceMenu invoiceMenu = new InvoiceMenu(invoiceService, invoiceSearchMenu);
+        InvoiceMenu invoiceMenu = new InvoiceMenu(invoiceService, invoiceSearchMenu, productService);
         ReportMenu reportMenu = new ReportMenu(revenueReportService);
         MainMenu mainMenu = new MainMenu();
         DashboardMenu dashboardMenu = new DashboardMenu(productMenu, customerMenu, invoiceMenu, mainMenu, reportMenu);

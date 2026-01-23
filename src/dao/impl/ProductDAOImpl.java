@@ -110,7 +110,7 @@ public class ProductDAOImpl implements IProductDAO {
             PreparedStatement ps = conn.prepareStatement(sql);
         ){
             ps.setInt(1, id);
-            ps.executeUpdate();
+            return ps.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -169,7 +169,7 @@ public class ProductDAOImpl implements IProductDAO {
 
     @Override
     public List<Product> findAllProductsByName(String name) {
-        String sql = "SELECT * FROM product WHERE name LIKE ?";
+        String sql = "SELECT * FROM product WHERE name ILIKE ?";
         List<Product> products = new ArrayList<>();
         try(Connection conn = dbUtil.getConnection();
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -191,5 +191,22 @@ public class ProductDAOImpl implements IProductDAO {
         return products;
     }
 
+    public BigDecimal getPriceById(int id) {
+        String sql = "SELECT price FROM product WHERE id = ?";
+        BigDecimal price = null;
+        try (Connection conn = dbUtil.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, id);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    price = rs.getBigDecimal("price");
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Lỗi khi lấy giá sản phẩm (ID: " + id + "): " + e.getMessage());
+        }
+        return price;
+    }
 
 }

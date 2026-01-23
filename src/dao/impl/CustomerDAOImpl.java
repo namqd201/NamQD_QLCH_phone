@@ -65,7 +65,7 @@ public class CustomerDAOImpl implements ICustomerDAO {
             PreparedStatement ps = conn.prepareStatement(sql);
         ){
             ps.setInt(1, id);
-            ps.executeUpdate();
+            return ps.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
         }

@@ -78,20 +78,50 @@ public class InvoiceSearchMenu implements Menu {
     }
 
     private void searchByDay(Scanner sc) {
-        int day;
+        int day, month, year;
 
         while (true) {
             try {
                 System.out.print("Nhập ngày (1-31): ");
                 day = Integer.parseInt(sc.nextLine());
-                break;
+                if (day > 0 && day <= 31) {
+                    break;
+                }
+                System.out.println("Ngày nhập không hợp lệ. Vui lòng nhập trong khoảng 1-31");
+
             } catch (NumberFormatException e) {
                 System.out.println("Ngày phải là số!");
             }
         }
 
+        while (true) {
+            try {
+                System.out.print("Nhập tháng (1-12): ");
+                month = Integer.parseInt(sc.nextLine());
+                if (month > 0 && month <= 12) {
+                    break;
+                }
+                System.out.println("Tháng nhập không hợp lệ. Vui lòng nhập trong khoảng 1-12");
+            } catch (NumberFormatException e) {
+                System.out.println("Thángphải là số!");
+            }
+        }
+
+        while (true) {
+            try {
+                System.out.print("Nhập năm: ");
+                year = Integer.parseInt(sc.nextLine());
+                if (year > 2023 && year <= 2026) {
+                    break;
+                }
+                System.out.println("Năm nhập không hợp lệ. Vui lòng nhập trong khoảng 2024-2026");
+            } catch (NumberFormatException e) {
+                System.out.println("Năm phải là số!");
+            }
+        }
+
         List<Invoice> invoices =
-                invoiceService.findInvoiceByDay(day);
+                invoiceService.findInvoiceByDay(day, month, year);
 
         if (invoices.isEmpty()) {
             System.out.println("Không tìm thấy hóa đơn nào!");
@@ -113,20 +143,36 @@ public class InvoiceSearchMenu implements Menu {
     }
 
     private void searchByMonth(Scanner sc) {
-        int month;
+        int month, year;
 
         while (true) {
             try {
                 System.out.print("Nhập tháng (1-12): ");
                 month = Integer.parseInt(sc.nextLine());
-                break;
+                if (month > 0 && month <= 12) {
+                    break;
+                }
+                System.out.println("Tháng nhập không hợp lệ. Vui lòng nhập trong khoảng 1-12");
             } catch (NumberFormatException e) {
                 System.out.println("Tháng phải là số!");
             }
         }
 
+        while (true) {
+            try {
+                System.out.print("Nhập năm: ");
+                year = Integer.parseInt(sc.nextLine());
+                if (year > 2023 && year <= 2026) {
+                    break;
+                }
+                System.out.println("Năm nhập không hợp lệ. Vui lòng nhập trong khoảng 2024-2026");
+            } catch (NumberFormatException e) {
+                System.out.println("Năm phải là số!");
+            }
+        }
+
         List<Invoice> invoices =
-                invoiceService.findInvoiceByMonth(month);
+                invoiceService.findInvoiceByMonth(month, year);
 
         if (invoices.isEmpty()) {
             System.out.println("Không tìm thấy hóa đơn nào!");
@@ -154,7 +200,10 @@ public class InvoiceSearchMenu implements Menu {
             try {
                 System.out.print("Nhập năm: ");
                 year = Integer.parseInt(sc.nextLine());
-                break;
+                if (year > 2023 && year <= 2026) {
+                    break;
+                }
+                System.out.println("Năm nhập không hợp lệ. Vui lòng nhập trong khoảng 2024-2026");
             } catch (NumberFormatException e) {
                 System.out.println("Năm phải là số!");
             }

@@ -14,12 +14,12 @@ public class ProductServiceImpl implements IProductService {
         this.productDAO = productDAO;
     }
     @Override
-    public boolean addProduct(Product product) {
+    public Boolean addProduct(Product product) {
         return productDAO.addProduct(product);
     }
 
     @Override
-    public boolean updateProduct(Product product) {
+    public Boolean updateProduct(Product product) {
         if(productDAO.findProductById(product.getProductId())==null){
             return false;
         }
@@ -27,7 +27,7 @@ public class ProductServiceImpl implements IProductService {
     }
 
     @Override
-    public boolean deleteProduct(int id) {
+    public Boolean deleteProduct(int id) {
         if(productDAO.findProductById(id)==null){
             return false;
         }
@@ -57,5 +57,9 @@ public class ProductServiceImpl implements IProductService {
     @Override
     public List<Product> findByName(String name) {
         return productDAO.findAllProductsByName(name);
+    }
+
+    public BigDecimal findPriceById(int id) {
+        return productDAO.getPriceById(id);
     }
 }
